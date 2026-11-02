@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F3EEE6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mon chemin">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<title>Mon chemin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+
+/* Sable & sauge : fond sable, cartes blanches, accent sauge */
+:root{
+  --bg:#F3EEE6; --card:#FFFFFF; --ink:#3D3A35; --muted:#6F6A60; --sage:#5E7A63; --sage-soft:#8FA893;
+  --lock:#E9E2D6; --lock-ink:#8C857A; --on-sage:#F3EEE6; --good:#3F7A4C; --good-bg:#E3EEE3; --bad:#A4473B; --bad-bg:#F6E3DF;
+  --serif:'Cormorant Garamond',Georgia,serif; --sans:'Nunito',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1E211E; --card:#2A2E2A; --ink:#ECE6DB; --muted:#B3AC9F; --sage:#9DBBA2; --sage-soft:#9DBBA2;
+  --lock:#343833; --lock-ink:#9A948A; --on-sage:#1E211E; --good:#9DD3A8; --good-bg:#2C3D30; --bad:#F0A396; --bad-bg:#46302C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1E211E; --card:#2A2E2A; --ink:#ECE6DB; --muted:#B3AC9F; --sage:#9DBBA2; --sage-soft:#9DBBA2;
+  --lock:#343833; --lock-ink:#9A948A; --on-sage:#1E211E; --good:#9DD3A8; --good-bg:#2C3D30; --bad:#F0A396; --bad-bg:#46302C; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans)}
+.wrap{max-width:440px;margin:0 auto;padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+.eyebrow{font-size:11px;letter-spacing:1.5px;font-weight:800;color:var(--sage-soft);text-transform:uppercase}
+h1{font-family:var(--serif);font-size:32px;font-weight:600;margin:0;text-wrap:balance}
+.hello{font-size:14px;color:var(--muted);font-weight:600}
+.card{background:var(--card);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.quote{font-family:var(--serif);font-style:italic;font-size:22px;line-height:1.25;margin:0}
+.small{font-size:13px;color:var(--muted)}
+.ep{background:var(--sage);color:var(--on-sage);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.ep-top{display:flex;gap:16px;align-items:center}
+.play{width:58px;height:58px;border-radius:50%;border:none;background:var(--on-sage);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
+.play svg{fill:var(--sage)}
+.ep-title{font-family:var(--serif);font-size:24px;font-weight:600;line-height:1.1}
+.ep .meta{font-size:11px;letter-spacing:1.5px;font-weight:800;opacity:.85}
+.bar{height:6px;border-radius:99px;background:color-mix(in srgb,var(--on-sage) 30%,transparent);cursor:pointer;position:relative}
+.bar i{display:block;height:6px;border-radius:99px;background:var(--on-sage);width:0}
+.times{display:flex;justify-content:space-between;font-size:12px;opacity:.85;font-variant-numeric:tabular-nums}
+.btn{border:none;border-radius:14px;padding:14px 18px;font:800 15px var(--sans);cursor:pointer}
+.btn-light{background:var(--on-sage);color:var(--sage)}
+.btn-sage{background:var(--sage);color:var(--on-sage)}
+.btn-ghost{background:transparent;color:var(--muted);padding:10px 0;text-align:left}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:focus-visible,.opt:focus-visible,.play:focus-visible{outline:3px solid var(--sage-soft);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.slot{background:var(--lock);border-radius:18px;height:78px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--lock-ink);font-size:12px;font-weight:700}
+.slot svg{stroke:var(--lock-ink)}
+.prog{height:8px;border-radius:99px;background:var(--lock);overflow:hidden}
+.prog i{display:block;height:8px;background:var(--sage);transition:width .3s}
+.q{font-family:var(--serif);font-size:25px;font-weight:600;line-height:1.2;margin:0;text-wrap:balance}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:var(--card);color:var(--ink);border:2px solid transparent;border-radius:16px;padding:16px;text-align:left;font:600 15px/1.35 var(--sans);cursor:pointer}
+.opt.ok{border-color:var(--good);background:var(--good-bg)}
+.opt.ko{border-color:var(--bad);background:var(--bad-bg)}
+.opt:disabled{cursor:default}
+.fb{border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.45}
+.fb.ok{background:var(--good-bg);color:var(--ink)} .fb.ko{background:var(--bad-bg);color:var(--ink)}
+.fb b{display:block;margin-bottom:4px}
+.score{font-family:var(--serif);font-size:64px;font-weight:600;line-height:1;color:var(--sage)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="home">
+  <div style="display:flex;flex-direction:column;gap:2px">
+    <span class="hello">Salam aleykoum</span>
+    <h1>Mon chemin</h1>
+  </div>
+
+  <div class="card">
+    <span class="eyebrow">Rappel du jour</span>
+    <p class="quote">« Je n'ai créé les djinns et les hommes que pour qu'ils M'adorent. »</p>
+    <span class="small">Sourate Adh-Dhariyat, verset 56</span>
+  </div>
+
+  <div class="ep">
+    <div class="ep-top">
+      <button class="play" id="play" aria-label="Écouter l'épisode 1">
+        <svg id="icoPlay" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>
+        <svg id="icoPause" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+      </button>
+      <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+        <span class="meta">ÉPISODE 1 · 4 MIN</span>
+        <span class="ep-title">La ilaha illa Allah</span>
+      </div>
+    </div>
+    <div class="bar" id="bar" role="slider" aria-label="Position dans l'épisode" tabindex="0"><i id="fill"></i></div>
+    <div class="times"><span id="cur">0:00</span><span id="dur">4:06</span></div>
+    <button class="btn btn-light" id="startQuiz">Faire le quiz · 8 questions</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <span class="eyebrow">La suite</span>
+    <div class="grid" id="slots"></div>
+  </div>
+</div>
+
+<div class="wrap" id="quiz" hidden>
+  <button class="btn btn-ghost" id="back">← Retour</button>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <span class="eyebrow" id="qnum">Question 1 sur 8</span>
+    <div class="prog"><i id="qprog"></i></div>
+  </div>
+  <p class="q" id="qtext"></p>
+  <div class="opts" id="opts"></div>
+  <div class="fb" id="fb" hidden></div>
+  <button class="btn btn-sage" id="next" hidden>Suivant</button>
+</div>
+
+<div class="wrap" id="result" hidden>
+  <div class="card" style="align-items:center;text-align:center;gap:12px;padding:32px 20px">
+    <span class="eyebrow">Ton score</span>
+    <span class="score" id="score">0/8</span>
+    <p class="quote" id="scoreMsg" style="font-size:20px"></p>
+  </div>
+  <button class="btn btn-sage" id="retry">Refaire le quiz</button>
+  <button class="btn btn-ghost" id="home2" style="text-align:center">Retour à l'accueil</button>
+</div>
+
+<audio id="audio" preload="metadata" src="audio/episode-1.m4a"></audio>
+
+<script>
+const QUIZ=[
+ {q:"Le sens de la parole La ilaha illa Allah est :",o:["Il n'y a de Dieu que Dieu","Il n'y a pas de vraie divinité qui mérite d'être adorée en dehors d'Allah","Pas de créateur en dehors d'Allah"],a:1,e:"C'est la traduction la plus proche du sens : il n'y a pas de vraie divinité qui mérite d'être adorée, sauf Allah."},
+ {q:"Cette parole a :",o:["Deux piliers","Un pilier","Sept piliers"],a:0,e:"La ilaha illa Allah comporte deux piliers : la négation et l'affirmation."},
+ {q:"Les piliers de cette parole sont :",o:["L'affirmation","La négation","La négation et l'affirmation"],a:2,e:"Comme dans l'exemple d'Omar : « il n'y a personne dans la salle (négation), sauf Omar (affirmation) »."},
+ {q:"La négation est :",o:["La ilaha (il n'y a pas de vraie divinité qui mérite d'être adorée)","Illa Allah (sauf Allah)"],a:0,e:"« La » exprime la négation, et « ilah » signifie celui qui est adoré."},
+ {q:"L'affirmation est :",o:["La ilaha (il n'y a pas de vraie divinité qui mérite d'être adorée)","Illa Allah (sauf Allah)"],a:1,e:"« Illa Allah » affirme l'exception réservée à Allah seul : l'adoration ne revient qu'à Lui."},
+ {q:"Quel est le jugement d'étudier l'unicité d'Allah, le Tawhid ?",o:["Obligatoire","Préférable"],a:0,e:"Étudier le Tawhid est obligatoire : sans le Tawhid, il n'y a pas de religion."},
+ {q:"Est-ce que l'étude d'une école juridique (madhhab) est une innovation ?",o:["Oui","Non, tant que l'on reste dans un juste milieu"],a:1,e:"Les savants conseillent même de choisir une école quand on débute, pour structurer son apprentissage."},
+ {q:"L'étude d'une école juridique est :",o:["Un moyen nous permettant d'apprendre à adorer Allah correctement","Une finalité en soi"],a:0,e:"L'école juridique est un moyen d'apprendre la religion d'Allah, pas une finalité en soi."}
+];
+const $=id=>document.getElementById(id);
+const show=v=>{["home","quiz","result"].forEach(k=>$(k).hidden=k!==v);window.scrollTo(0,0)};
+
+// emplacements verrouillés
+$("slots").innerHTML=[2,3,4,5,6,7].map(n=>`<div class="slot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Épisode ${n}</div>`).join("");
+
+// lecteur audio
+const au=$("audio"),fmt=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+$("play").onclick=()=>{au.paused?au.play():au.pause()};
+au.onplay=()=>{$("icoPlay").hidden=true;$("icoPause").hidden=false;$("play").setAttribute("aria-label","Mettre en pause")};
+au.onpause=()=>{$("icoPlay").hidden=false;$("icoPause").hidden=true;$("play").setAttribute("aria-label","Écouter l'épisode 1")};
+au.onloadedmetadata=()=>{$("dur").textContent=fmt(au.duration)};
+au.ontimeupdate=()=>{$("cur").textContent=fmt(au.currentTime);$("fill").style.width=(au.duration?au.currentTime/au.duration*100:0)+"%"};
+$("bar").onclick=e=>{const r=$("bar").getBoundingClientRect();if(au.duration)au.currentTime=(e.clientX-r.left)/r.width*au.duration};
+$("bar").onkeydown=e=>{if(e.key==="ArrowRight")au.currentTime+=10;if(e.key==="ArrowLeft")au.currentTime-=10};
+
+// quiz
+let i=0,score=0;
+function render(){
+  const it=QUIZ[i];
+  $("qnum").textContent=`Question ${i+1} sur ${QUIZ.length}`;
+  $("qprog").style.width=(i/QUIZ.length*100)+"%";
+  $("qtext").textContent=it.q;
+  $("fb").hidden=true;$("next").hidden=true;
+  $("opts").innerHTML="";
+  it.o.forEach((t,k)=>{const b=document.createElement("button");b.className="opt";b.textContent=t;b.onclick=()=>answer(k);$("opts").appendChild(b)});
+}
+function answer(k){
+  const it=QUIZ[i],bs=[...$("opts").children];
+  bs.forEach(b=>b.disabled=true);
+  bs[it.a].classList.add("ok");
+  const good=k===it.a; if(good)score++; else bs[k].classList.add("ko");
+  const fb=$("fb");fb.className="fb "+(good?"ok":"ko");
+  fb.innerHTML="";const b=document.createElement("b");b.textContent=good?"Bravo, c'est juste !":"Pas tout à fait.";fb.appendChild(b);fb.appendChild(document.createTextNode(it.e));fb.hidden=false;
+  $("next").textContent=i===QUIZ.length-1?"Voir mon score":"Suivant";$("next").hidden=false;$("next").focus();
+}
+$("next").onclick=()=>{i++;if(i<QUIZ.length)render();else finish()};
+function finish(){
+  $("score").textContent=score+"/"+QUIZ.length;
+  $("scoreMsg").textContent=score===QUIZ.length?"Parfait, machaAllah !":score>=6?"Très bien, barakAllahou fik !":"Réécoute l'épisode et retente ta chance.";
+  show("result");
+}
+const start=()=>{i=0;score=0;au.pause();render();show("quiz")};
+$("startQuiz").onclick=start;$("retry").onclick=start;
+$("back").onclick=()=>show("home");$("home2").onclick=()=>show("home");
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
+</script>
+</body>
+</html>
